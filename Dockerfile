@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:8.4-cli
 
 RUN apt-get update && apt-get install -y \
     libpq-dev \
@@ -12,9 +12,9 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY . .
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --no-audit
 
-RUN php bin/console cache:warmup --env=prod --no-debug
+RUN APP_ENV=prod APP_SECRET=buildsecret php bin/console cache:warmup --env=prod --no-debug
 
 EXPOSE 8080
 
